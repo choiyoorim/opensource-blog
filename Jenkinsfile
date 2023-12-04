@@ -31,7 +31,7 @@ pipeline {
                 sh 'docker ps -f name=blog -q | xargs --no-run-if-empty docker container stop'
                 sh 'docker container ls -a -fname=sbor_dev -q | xargs -r docker container rm'
                 sh 'docker images --no-trunc --all --quiet --filter="dangling=true" | xargs --no-run-if-empty docker rmi'
-                sh 'docker run -d --name blog -p 8080:8080 blog:latest'
+                sh 'docker run -d --name blog -p 5001:8080 blog:latest'
             }
         }
     }
