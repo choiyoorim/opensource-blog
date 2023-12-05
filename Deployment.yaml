@@ -33,7 +33,7 @@ metadata:
     app: blog
 spec:
   ports:
-    - port: 80
+    - port: 8080
       targetPort: 5000
   selector:
     app: blog
