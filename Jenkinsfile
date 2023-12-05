@@ -1,6 +1,14 @@
 pipeline {
     agent none
     options { skipDefaultCheckout(true) }
+    environment {
+            PROJECT_ID = 'opensource-team'
+            CLUSTER_NAME = 'k8s'
+            LOCATION = 'asia-northeast3-a'
+            CREDENTIALS_ID = '1ae4e1a9-f5e1-4ec8-907d-aef2248d041e'
+    }
+
+
     stages {
         stage('Checkout repository') {
             agent any
@@ -22,16 +30,29 @@ pipeline {
         stage('Docker build') {
             agent any
             steps {
-                sh 'docker build -t blog:latest .'
+                script {
+                    myapp = docker.build("choiyoorim/blog:${env.BUILD_ID}")
+                }
+            }
+        }
+        stage('Docker push image') {
+            agent any
+            steps {
+                script {
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub') {
+                            myapp.push("latest")
+                            myapp.push("${env.BUILD_ID}")
+                        }
+                    }
             }
         }
         stage('Docker run') {
-            agent any
-            steps {
-                sh 'docker ps -f name=blog -q | xargs --no-run-if-empty docker container stop'
-                sh 'docker container ls -a -fname=blog -q | xargs -r docker container rm'
-                sh 'docker image prune -a -f'
-                sh 'docker run -d --name blog -p 5001:8080 blog:latest'
+            when {
+            		branch 'main'
+            }
+            steps{
+                sh "sed -i 's/blog:latest/blog:${env.BUILD_ID}/g' deployment.yaml"
+                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
             }
         }
     }
