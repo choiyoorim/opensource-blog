@@ -47,6 +47,7 @@ pipeline {
             }
         }
         stage('Docker run') {
+            agent any
             when {
             		branch 'main'
             }
