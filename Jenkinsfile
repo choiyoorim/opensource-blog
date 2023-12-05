@@ -28,10 +28,9 @@ pipeline {
         stage('Docker run') {
             agent any
             steps {
-                sh 'docker ps -a'
                 sh 'docker ps -f name=blog -q | xargs --no-run-if-empty docker container stop'
-                sh 'docker container ls -a -fname=sbor_dev -q | xargs -r docker container rm'
-                sh 'docker images --no-trunc --all --quiet --filter="dangling=true" | xargs --no-run-if-empty docker rmi'
+                sh 'docker container ls -a -fname=blog -q | xargs -r docker container rm'
+                sh 'docker image prune -a -f'
                 sh 'docker run -d --name blog -p 5001:8080 blog:latest'
             }
         }
