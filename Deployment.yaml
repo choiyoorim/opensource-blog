@@ -22,7 +22,7 @@ spec:
           image: choiyoorim/blog:latest
           imagePullPolicy: Always
           ports:
-            - containerPort: 5000
+            - containerPort: 8080
               name: blog
 ---
 apiVersion: v1
@@ -34,7 +34,7 @@ metadata:
 spec:
   ports:
     - port: 8080
-      targetPort: 5000
+      targetPort: 8080
   selector:
     app: blog
     tier: blog
