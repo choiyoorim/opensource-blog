@@ -29,10 +29,21 @@ pipeline {
         }
         stage('Docker build') {
             agent any
+            when {
+                    branch 'main'
+            }
             steps {
                 script {
                     myapp = docker.build("choiyoorim/blog:${env.BUILD_ID}")
                 }
+            }
+            when{
+                    branch 'develop'
+            }
+            steps {
+                    script {
+                        myapp = docker.build("choiyoorim/testblog:${env.BUILD_ID}")
+                    }
             }
         }
         stage('Docker push image') {
