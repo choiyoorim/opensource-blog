@@ -56,5 +56,16 @@ pipeline {
                 step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'Deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
             }
         }
+
+        stage('Test Docker run') {
+            agent any
+            when {
+                    branch 'develop'
+            }
+            steps{
+                sh "sed -i 's/testblog:latest/testblog:${env.BUILD_ID}/g' TestDeployment.yaml"
+                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'TestDeployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
+            }
+        }
     }
 }
