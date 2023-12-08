@@ -37,13 +37,16 @@ pipeline {
                     myapp = docker.build("choiyoorim/blog:${env.BUILD_ID}")
                 }
             }
-            when{
+        }
+        stage('Test Docker build') {
+            agent any
+            when {
                     branch 'develop'
             }
             steps {
-                    script {
-                        myapp = docker.build("choiyoorim/testblog:${env.BUILD_ID}")
-                    }
+                script {
+                    myapp = docker.build("choiyoorim/testblog:${env.BUILD_ID}")
+                }
             }
         }
         stage('Docker push image') {
