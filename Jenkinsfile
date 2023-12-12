@@ -21,7 +21,8 @@ pipeline {
         	steps {
             	withCredentials([file(credentialsId: 'db-credential', variable: 'dbConfigFile')]) {
                 	script {
-                    	sh 'sudo cp $dbConfigFile src/main/resources/application-db.yml'
+                	    sh 'chmod 755 src/main/resources/application-db.yml'
+                    	sh 'cp $dbConfigFile src/main/resources/application-db.yml'
                     }
         		}
         	}
