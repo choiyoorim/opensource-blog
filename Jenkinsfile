@@ -8,7 +8,6 @@ pipeline {
             CREDENTIALS_ID = '1ae4e1a9-f5e1-4ec8-907d-aef2248d041e'
     }
 
-
     stages {
         stage('Checkout repository') {
             agent any
@@ -16,6 +15,18 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage('Secret.yml download') {
+            agent any
+        	steps {
+            	withCredentials([file(credentialsId: 'db-credential', variable: 'dbConfigFile')]) {
+                	script {
+                    	sh 'cp $dbConfigFile src/main/resources/application-db.yml'
+                    }
+        		}
+        	}
+        }
+
         stage('Build and test') {
             agent {
                 docker {
@@ -27,11 +38,26 @@ pipeline {
                 sh 'gradle clean build -x test'
             }
         }
+
         stage('Docker build') {
             agent any
+            when {
+                    branch 'main'
+            }
             steps {
                 script {
                     myapp = docker.build("choiyoorim/blog:${env.BUILD_ID}")
+                }
+            }
+        }
+        stage('Test Docker build') {
+            agent any
+            when {
+                    branch 'develop'
+            }
+            steps {
+                script {
+                    myapp = docker.build("choiyoorim/testblog:${env.BUILD_ID}")
                 }
             }
         }
@@ -54,6 +80,17 @@ pipeline {
             steps{
                 sh "sed -i 's/blog:latest/blog:${env.BUILD_ID}/g' Deployment.yaml"
                 step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'Deployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
+            }
+        }
+
+        stage('Test Docker run') {
+            agent any
+            when {
+                    branch 'develop'
+            }
+            steps{
+                sh "sed -i 's/testblog:latest/testblog:${env.BUILD_ID}/g' TestDeployment.yaml"
+                step([$class: 'KubernetesEngineBuilder', projectId: env.PROJECT_ID, clusterName: env.CLUSTER_NAME, location: env.LOCATION, manifestPattern: 'TestDeployment.yaml', credentialsId: env.CREDENTIALS_ID, verifyDeployments: true])
             }
         }
     }

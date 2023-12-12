@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: testblog
+  labels:
+    app: testblog
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: testblog
+  template:
+    metadata:
+      labels:
+        app: testblog
+        tier: testblog
+    spec:
+      containers:
+        - name: testblog
+          image: choiyoorim/testblog:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: testblog
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: testblog
+  labels:
+    app: testblog
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+  selector:
+    app: testblog
+    tier: testblog
+  type: LoadBalancer
