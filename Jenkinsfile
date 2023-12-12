@@ -21,7 +21,7 @@ pipeline {
         	steps {
             	withCredentials([file(credentialsId: 'db-credential', variable: 'dbConfigFile')]) {
                 	script {
-                    	sh 'cp $dbConfigFile blog/src/main/resources/application-db.yml'
+                    	sh 'cp $dbConfigFile src/main/resources/application-db.yml'
                     }
         		}
         	}
