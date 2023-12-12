@@ -16,7 +16,8 @@ pipeline {
             }
         }
 
-        stage('secret.yml download') {
+        stage('Secret.yml download') {
+            agent any
         	steps {
             	withCredentials([file(credentialsId: 'db-credential', variable: 'dbConfigFile')]) {
                 	script {
