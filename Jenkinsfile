@@ -8,7 +8,6 @@ pipeline {
             CREDENTIALS_ID = '1ae4e1a9-f5e1-4ec8-907d-aef2248d041e'
     }
 
-
     stages {
         stage('Checkout repository') {
             agent any
@@ -16,6 +15,17 @@ pipeline {
                 checkout scm
             }
         }
+
+        stage('secret.yml download') {
+        	steps {
+            	withCredentials([file(credentialsId: 'db-credential', variable: 'dbConfigFile')]) {
+                	script {
+                    	sh 'cp $dbConfigFile blog/src/main/resources/application-db.yml'
+                    }
+        		}
+        	}
+        }
+
         stage('Build and test') {
             agent {
                 docker {
@@ -27,6 +37,7 @@ pipeline {
                 sh 'gradle clean build -x test'
             }
         }
+
         stage('Docker build') {
             agent any
             when {
