@@ -16,16 +16,16 @@ pipeline {
             }
         }
 
-        stage('Secret.yml download') {
-            agent any
-        	steps {
-            	withCredentials([file(credentialsId: 'db-credential', variable: 'dbConfigFile')]) {
-                	script {
-                    	sh 'cp $dbConfigFile src/main/resources/application-db.yml'
-                    }
-        		}
-        	}
-        }
+//         stage('Secret.yml download') {
+//             agent any
+//         	steps {
+//             	withCredentials([file(credentialsId: 'db-credential', variable: 'dbConfigFile')]) {
+//                 	script {
+//                     	sh 'cp $dbConfigFile src/main/resources/application-db.yml'
+//                     }
+//         		}
+//         	}
+//         }
 
         stage('Build and test') {
             agent {
