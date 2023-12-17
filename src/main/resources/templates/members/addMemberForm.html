@@ -2,15 +2,21 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8">
-    <link th:href="@{/css/bootstrap.min.css}"
-          href="../css/bootstrap.min.css" rel="stylesheet">
+    <link th:href="@{/css/bootstrap.min.css}" href="../css/bootstrap.min.css" rel="stylesheet">
     <style>
         .container {
             max-width: 560px;
         }
+
         .field-error {
             border-color: #dc3545;
             color: #dc3545;
+        }
+
+        /* btn-primary 클래스에 검정색 스타일을 추가합니다. */
+        .btn-primary {
+            background-color: #000;
+            border-color: #000;
         }
     </style>
 </head>
@@ -32,28 +38,25 @@
 
         <div>
             <label for="loginId">로그인 ID</label>
-            <input type="text" id="loginId" th:field="*{loginId}" class="form-control"
-                   th:errorclass="field-error">
+            <input type="text" id="loginId" th:field="*{loginId}" class="form-control" th:errorclass="field-error">
             <div class="field-error" th:errors="*{loginId}" />
         </div>
         <div>
             <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" class="form-control"
-                   th:errorclass="field-error">
+            <input type="password" id="password" th:field="*{password}" class="form-control" th:errorclass="field-error">
             <div class="field-error" th:errors="*{password}" />
         </div>
         <div>
             <label for="name">이름</label>
-            <input type="text" id="name" th:field="*{name}" class="form-control"
-                   th:errorclass="field-error">
+            <input type="text" id="name" th:field="*{name}" class="form-control" th:errorclass="field-error">
             <div class="field-error" th:errors="*{name}" />
         </div>
-
 
         <hr class="my-4">
 
         <div class="row">
             <div class="col">
+                <!-- btn-primary 클래스를 사용하여 버튼의 색상을 검정색으로 설정합니다. -->
                 <button class="w-100 btn btn-primary btn-lg" type="submit">회원 가입</button>
             </div>
             <div class="col">
