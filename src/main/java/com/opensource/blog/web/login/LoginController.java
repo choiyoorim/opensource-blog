@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class LoginController {
     private final LoginService loginService;
-    @GetMapping("/login")
+    @GetMapping(value = {"/login", "test/login"})
     public String loginForm(@ModelAttribute("loginForm") LoginForm form) {
         return "login/loginForm";
     }
-    @PostMapping("/login")
+    @PostMapping(value = {"/login", "test/login"})
     public String login(@Validated @ModelAttribute LoginForm form, BindingResult
             bindingResult) {
         if (bindingResult.hasErrors()) {
