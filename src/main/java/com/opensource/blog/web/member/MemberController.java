@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/members")
+@RequestMapping(value = {"/members", "/test/members"})
 public class MemberController {
     private final MemberRepository memberRepository;
     @GetMapping("/add")
